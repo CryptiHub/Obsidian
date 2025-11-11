@@ -7388,6 +7388,28 @@ function Library:CreateWindow(WindowInfo)
             Library.ActiveTab = nil
         end
 
+        function Tab:SetIcon(iconname)
+            Icon = Library:GetCustomIcon(iconname)
+            if Icon then
+                if TabIcon then
+                    TabIcon.Image = Icon.Url
+                    TabIcon.ImageRectOffset = Icon.ImageRectOffset
+                    TabIcon.ImageRectSize = Icon.ImageRectSize
+                else
+                    TabIcon = New("ImageLabel", {
+                        Image = Icon.Url,
+                        ImageColor3 = Icon.Custom and "White" or "AccentColor",
+                        ImageRectOffset = Icon.ImageRectOffset,
+                        ImageRectSize = Icon.ImageRectSize,
+                        ImageTransparency = 0.5,
+                        Size = UDim2.fromScale(1, 1),
+                        SizeConstraint = Enum.SizeConstraint.RelativeYY,
+                        Parent = TabButton,
+                    })
+                end
+            end
+        end
+
         --// Execution \\--
         if not Library.ActiveTab then
             Tab:Show()
