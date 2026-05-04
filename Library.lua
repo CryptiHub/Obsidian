@@ -6891,6 +6891,13 @@ function Library:CreateWindow(WindowInfo)
         WindowTitle.TextColor3 = color
     end
 
+    function Window:HideTabInfo()
+        CurrentTabInfo.Visible = false
+        if IsDefaultSearchbarSize then
+            SearchBox.Size = UDim2.fromScale(1, 1)
+        end
+    end
+
     function Window:AddTab(...)
         local Name = nil
         local Icon = nil
