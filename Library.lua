@@ -3098,62 +3098,61 @@ do
         })
     end
 
-function Funcs:AddDividerWithText(Text)
-    local Groupbox = self
-    local Container = Groupbox.Container
-    local ContainerWidth = Container.AbsoluteSize.X
-    local Holder = New("Frame", {
-        BackgroundTransparency = 1,
-        Size = UDim2.new(1, 0, 0, 20),
-        Parent = Container,
-    })
+    function Funcs:AddDividerWithText(Text)
+        local Groupbox = self
+        local Container = Groupbox.Container
+        local ContainerWidth = Container.AbsoluteSize.X
+        local Holder = New("Frame", {
+            BackgroundTransparency = 1,
+            Size = UDim2.new(1, 0, 0, 20),
+            Parent = Container,
+        })
 
-    local TextWidth, TextHeight = Library:GetTextBounds(Text, Library.Scheme.Font, 14, ContainerWidth)
-    local TotalPadding = 10 * Library.DPIScale
-    local DividerHeight = 2 * Library.DPIScale
+        local TextWidth, TextHeight = Library:GetTextBounds(Text, Library.Scheme.Font, 14, ContainerWidth)
+        local TotalPadding = 10 * Library.DPIScale
+        local DividerHeight = 2 * Library.DPIScale
 
-    local AvailableWidth = ContainerWidth - TextWidth - (2 * TotalPadding)
-    local DividerWidth = math.max(0, AvailableWidth / 2)
+        local AvailableWidth = ContainerWidth - TextWidth - (2 * TotalPadding)
+        local DividerWidth = math.max(0, AvailableWidth / 2)
 
-    local LeftDivider = New("Frame", {
-        BackgroundColor3 = Library.Scheme.MainColor,
-        BorderColor3 = Library.Scheme.OutlineColor,
-        BorderSizePixel = 1,
-        Size = UDim2.new(0, DividerWidth, 0, DividerHeight),
-        Position = UDim2.new(0, 0, 0.5, -DividerHeight / 2),
-        Parent = Holder,
-    })
+        local LeftDivider = New("Frame", {
+            BackgroundColor3 = Library.Scheme.MainColor,
+            BorderColor3 = Library.Scheme.OutlineColor,
+            BorderSizePixel = 1,
+            Size = UDim2.new(0, DividerWidth, 0, DividerHeight),
+            Position = UDim2.new(0, 0, 0.5, -DividerHeight / 2),
+            Parent = Holder,
+        })
 
-    local TextLabel = New("TextLabel", {
-        BackgroundTransparency = 1,
-        Position = UDim2.new(0, DividerWidth + TotalPadding, 0.5, -TextHeight / 2),
-        Size = UDim2.new(0, TextWidth, 0, TextHeight),
-        Text = Text,
-        TextSize = 14,
-        TextColor3 = Library.Scheme.FontColor,
-        Parent = Holder,
-    })
+        local TextLabel = New("TextLabel", {
+            BackgroundTransparency = 1,
+            Position = UDim2.new(0, DividerWidth + TotalPadding, 0.5, -TextHeight / 2),
+            Size = UDim2.new(0, TextWidth, 0, TextHeight),
+            Text = Text,
+            TextSize = 14,
+            TextColor3 = Library.Scheme.FontColor,
+            Parent = Holder,
+        })
 
-    local RightDivider = New("Frame", {
-        BackgroundColor3 = Library.Scheme.MainColor,
-        BorderColor3 = Library.Scheme.OutlineColor,
-        BorderSizePixel = 1,
-        Size = UDim2.new(0, DividerWidth, 0, DividerHeight),
-        Position = UDim2.new(0, DividerWidth + TextWidth + TotalPadding, 0.5, -DividerHeight / 2),
-        Parent = Holder,
-    })
+        local RightDivider = New("Frame", {
+            BackgroundColor3 = Library.Scheme.MainColor,
+            BorderColor3 = Library.Scheme.OutlineColor,
+            BorderSizePixel = 1,
+            Size = UDim2.new(0, DividerWidth, 0, DividerHeight),
+            Position = UDim2.new(0, DividerWidth + TextWidth + TotalPadding, 0.5, -DividerHeight / 2),
+            Parent = Holder,
+        })
 
-    Holder.Size = UDim2.new(1, 0, 0, TextHeight)
-    Library:UpdateDPI(Holder, { Size = UDim2.new(1, 0, 0, TextHeight) })
+        Holder.Size = UDim2.new(1, 0, 0, TextHeight)
+        Library:UpdateDPI(Holder, { Size = UDim2.new(1, 0, 0, TextHeight) })
 
-    Groupbox:Resize()
+        Groupbox:Resize()
 
-    table.insert(Groupbox.Elements, {
-        Holder = Holder,
-        Type = "Divider",
-    })
-end
-print("upd")
+        table.insert(Groupbox.Elements, {
+            Holder = Holder,
+            Type = "Divider",
+        })
+    end
     function Funcs:AddLabel(...)
         local Data = {}
         local Addons = {}
@@ -4462,6 +4461,7 @@ print("upd")
             TextSize = 14,
             TextXAlignment = Enum.TextXAlignment.Left,
             Visible = not not Info.Text,
+            ZIndex = 3,
             Parent = Holder,
         })
 
@@ -4469,13 +4469,12 @@ print("upd")
             Active = not Dropdown.Disabled,
             AnchorPoint = Vector2.new(0, 1),
             BackgroundColor3 = "MainColor",
-            BorderColor3 = "OutlineColor",
-            BorderSizePixel = 1,
             Position = UDim2.fromScale(0, 1),
             Size = UDim2.new(1, 0, 0, 21),
             Text = "---",
             TextSize = 14,
             TextXAlignment = Enum.TextXAlignment.Left,
+            ZIndex = 2,
             Parent = Holder,
         })
 
@@ -4484,6 +4483,24 @@ print("upd")
             PaddingRight = UDim.new(0, 4),
             Parent = Display,
         })
+
+        New("UIStroke", {
+            Color = "OutlineColor",
+            Parent = Display,
+        })
+
+        if Library.CornerElements and Library.CornerRadiusDropdown == true then
+            table.insert(
+                Library.Corners,
+                New("UICorner", {
+                    CornerRadius = UDim.new(0, Library.CornerRadius / 2),
+                    Parent = Display,
+                })
+            )
+        end
+
+        -- Dropdowns cant currently use corner radius since the button is supposed to be connected with the menu
+        -- This can be done properly without some random frames and overlaying textlabel over the button after Roblox adds UICorner with specific corner radiuses
 
         local ArrowImage = New("ImageLabel", {
             AnchorPoint = Vector2.new(1, 0.5),
@@ -4518,7 +4535,7 @@ print("upd")
         local MenuTable = Library:AddContextMenu(
             Display,
             function()
-                return UDim2.fromOffset(Display.AbsoluteSize.X, 0)
+                return UDim2.fromOffset(Display.AbsoluteSize.X / Library.DPIScale, 0)
             end,
             function()
                 return { 0.5, Display.AbsoluteSize.Y + 1.5 }
@@ -4532,23 +4549,16 @@ print("upd")
                     SearchBox.Text = ""
                     SearchBox.Visible = Active
                 end
-            end
+            end,
+            true
         )
         Dropdown.Menu = MenuTable
-        Library:UpdateDPI(MenuTable.Menu, {
-            Position = false,
-            Size = false,
-        })
 
         function Dropdown:RecalculateListSize(Count)
-            local Y = math.clamp(
-                (Count or GetTableSize(Dropdown.Values)) * (21 * Library.DPIScale),
-                0,
-                Info.MaxVisibleDropdownItems * (21 * Library.DPIScale)
-            )
+            local Y = math.clamp((Count or GetTableSize(Dropdown.Values)) * 21, 0, Info.MaxVisibleDropdownItems * 21)
 
             MenuTable:SetSize(function()
-                return UDim2.fromOffset(Display.AbsoluteSize.X, Y)
+                return UDim2.fromOffset(Display.AbsoluteSize.X / Library.DPIScale, Y)
             end)
         end
 
@@ -4570,7 +4580,7 @@ print("upd")
             local Str = ""
 
             if Info.Multi then
-                for _, Value in pairs(Dropdown.Values) do
+                for _, Value in Dropdown.Values do
                     if Dropdown.Value[Value] then
                         Str = Str
                             .. (Info.FormatDisplayValue and tostring(Info.FormatDisplayValue(Value)) or tostring(Value))
@@ -4586,8 +4596,17 @@ print("upd")
                 end
             end
 
-            if #Str > 25 then
-                Str = Str:sub(1, 22) .. "..."
+            local MaxWidth = Display.AbsoluteSize.X - 28 -- left padding + right arrow space
+            local TextWidth = Library:GetTextBounds(Str, Library.Scheme.Font, 14, math.huge)
+
+            if TextWidth > MaxWidth then
+                local Base = Str
+
+                repeat
+                    Base = Base:sub(1, #Base - 1)
+                    Str = Base .. "..."
+                    TextWidth = Library:GetTextBounds(Str, Library.Scheme.Font, 14, math.huge)
+                until TextWidth <= MaxWidth or #Base <= 0
             end
 
             Display.Text = (Str == "" and "---" or Str)
@@ -4601,7 +4620,7 @@ print("upd")
             if Info.Multi then
                 local Table = {}
 
-                for Value, _ in pairs(Dropdown.Value) do
+                for Value, _ in Dropdown.Value do
                     table.insert(Table, Value)
                 end
 
@@ -4611,23 +4630,209 @@ print("upd")
             return Dropdown.Value and 1 or 0
         end
 
+        function Dropdown:AddButton(...)
+            local function GetInfo(...)
+                local Info = {}
+
+                local First = select(1, ...)
+                local Second = select(2, ...)
+
+                if typeof(First) == "table" or typeof(Second) == "table" then
+                    local Params = typeof(First) == "table" and First or Second
+
+                    Info.Text = Params.Text or ""
+                    Info.Func = Params.Func or Params.Callback or function() end
+
+                    Info.Idx = typeof(Second) == "table" and First or nil
+                else
+                    Info.Text = First or ""
+                    Info.Func = Second or function() end
+
+                    Info.Idx = select(4, ...) or nil
+                end
+
+                return Info
+            end
+            local Info = GetInfo(...)
+
+            local Button = {
+                Text = Info.Text,
+                Func = function()
+                    Library:SafeCallback(Info.Func)
+
+                    Dropdown:Display()
+
+                    for _, Button in Buttons do
+                        Button:UpdateButton()
+                    end
+
+                    Library:UpdateDependencyBoxes()
+                    Library:SafeCallback(Dropdown.Callback, Dropdown.Value)
+                    Library:SafeCallback(Dropdown.Changed, Dropdown.Value)
+                end,
+
+                Tween = nil,
+                Type = "Button",
+            }
+
+            local Holder = New("Frame", {
+                BackgroundTransparency = 1,
+                Size = UDim2.new(1, -2, 0, 21),
+                Parent = MenuTable.Menu,
+            })
+            New("UIListLayout", {
+                FillDirection = Enum.FillDirection.Horizontal,
+                HorizontalFlex = Enum.UIFlexAlignment.Fill,
+                Padding = UDim.new(0, 6),
+                Parent = Holder,
+            })
+            New("UIPadding", {
+                PaddingLeft = UDim.new(0, 4),
+                PaddingRight = UDim.new(0, 4),
+                Parent = Holder,
+            })
+
+            local function CreateButton(Button)
+                local Base = New("TextButton", {
+                    BackgroundColor3 = "MainColor",
+                    Size = UDim2.fromScale(1, 1),
+                    Text = Button.Text,
+                    TextSize = 14,
+                    TextTransparency = 0.4,
+                    Visible = true,
+                    Parent = Holder,
+                })
+
+                New("UIStroke", {
+                    Color = "OutlineColor",
+                    Transparency = 0,
+                    Parent = Base,
+                })
+
+                if Library.CornerElements then
+                    table.insert(
+                        Library.Corners,
+                        New("UICorner", {
+                            CornerRadius = UDim.new(0, Library.CornerRadius / 2),
+                            Parent = Base,
+                        })
+                    )
+                end
+
+                return Base
+            end
+
+            local function InitEvents(Button)
+                Button.Base.MouseEnter:Connect(function()
+                    Button.Tween = TweenService:Create(Button.Base, Library.TweenInfo, {
+                        TextTransparency = 0,
+                    })
+                    Button.Tween:Play()
+                end)
+                Button.Base.MouseLeave:Connect(function()
+                    Button.Tween = TweenService:Create(Button.Base, Library.TweenInfo, {
+                        TextTransparency = 0.4,
+                    })
+                    Button.Tween:Play()
+                end)
+
+                Button.Base.MouseButton1Click:Connect(function()
+                    Library:SafeCallback(Button.Func)
+                end)
+            end
+
+            Button.Base = CreateButton(Button)
+            InitEvents(Button)
+
+            function Button:AddButton(...)
+                local Info = GetInfo(...)
+
+                local SubButton = {
+                    Text = Info.Text,
+                    Func = function()
+                        Library:SafeCallback(Info.Func)
+
+                        Dropdown:Display()
+
+                        for _, OtherButton in Buttons do
+                            OtherButton:UpdateButton()
+                        end
+
+                        Library:UpdateDependencyBoxes()
+                        Library:SafeCallback(Dropdown.Callback, Dropdown.Value)
+                        Library:SafeCallback(Dropdown.Changed, Dropdown.Value)
+                    end,
+
+                    Tween = nil,
+                    Type = "SubButton",
+                }
+
+                Button.SubButton = SubButton
+                SubButton.Base = CreateButton(SubButton)
+                InitEvents(SubButton)
+                return SubButton
+            end
+            return Button
+        end
+
         local Buttons = {}
         function Dropdown:BuildDropdownList()
             local Values = Dropdown.Values
             local DisabledValues = Dropdown.DisabledValues
 
-            for Button, _ in pairs(Buttons) do
-                Button:Destroy()
+            for _, Child in ipairs(MenuTable.Menu:GetChildren()) do
+                if not Child:IsA("UIListLayout") then
+                    Child:Destroy()
+                end
             end
             table.clear(Buttons)
 
             local Count = 0
-            for _, Value in pairs(Values) do
-                if SearchBox and not tostring(Value):lower():match(SearchBox.Text:lower()) then
+
+            if Info.Multi then
+                local SelectButton = self:AddButton("Select All", function()
+                    local Selected = {}
+
+                    for _, Value in Values do
+                        if not table.find(DisabledValues, Value) then
+                            Selected[Value] = true
+                        end
+                    end
+
+                    Dropdown:SetValue(Selected)
+                end)
+                SelectButton:AddButton("Deselect All", function()
+                    Dropdown:SetValue()
+                end)
+            end
+
+            MenuTable.Menu.UIListLayout.Padding = UDim.new(0, Info.Multi and 4 or 0)
+            New("UIPadding", {
+                PaddingTop = UDim.new(0, 4),
+                Parent = MenuTable.Menu,
+            })
+
+            local ButtonHolder = New("Frame", {
+                AutomaticSize = Enum.AutomaticSize.Y,
+                BackgroundTransparency = 1,
+                LayoutOrder = Info.Multi and 1 or 0,
+                Size = UDim2.fromScale(1, 1),
+                Parent = MenuTable.Menu,
+            })
+            New("UIListLayout", {
+                Padding = UDim.new(0, 0),
+                Parent = ButtonHolder,
+            })
+
+
+            for _, Value in Values do
+                local FormattedValue = tostring(Info.FormatListValue and Info.FormatListValue(Value) or Value)
+                if SearchBox and not FormattedValue:lower():match(SearchBox.Text:lower()) then
                     continue
                 end
 
                 Count += 1
+
                 local IsDisabled = table.find(DisabledValues, Value)
                 local Table = {}
 
@@ -4636,11 +4841,11 @@ print("upd")
                     BackgroundTransparency = 1,
                     LayoutOrder = IsDisabled and 1 or 0,
                     Size = UDim2.new(1, 0, 0, 21),
-                    Text = tostring(Value),
+                    Text = FormattedValue,
                     TextSize = 14,
                     TextTransparency = 0.5,
                     TextXAlignment = Enum.TextXAlignment.Left,
-                    Parent = MenuTable.Menu,
+                    Parent = ButtonHolder,
                 })
                 New("UIPadding", {
                     PaddingLeft = UDim.new(0, 7),
@@ -4678,7 +4883,7 @@ print("upd")
                                 Dropdown.Value = Selected and Value or nil
                             end
 
-                            for _, OtherButton in pairs(Buttons) do
+                            for _, OtherButton in Buttons do
                                 OtherButton:UpdateButton()
                             end
                         end
@@ -4686,9 +4891,9 @@ print("upd")
                         Table:UpdateButton()
                         Dropdown:Display()
 
+                        Library:UpdateDependencyBoxes()
                         Library:SafeCallback(Dropdown.Callback, Dropdown.Value)
                         Library:SafeCallback(Dropdown.Changed, Dropdown.Value)
-                        Library:UpdateDependencyBoxes()
                     end)
                 end
 
@@ -4705,8 +4910,10 @@ print("upd")
             if Info.Multi then
                 local Table = {}
 
-                for Val, Active in pairs(Value or {}) do
-                    if Active and table.find(Dropdown.Values, Val) then
+                for Val, Active in Value or {} do
+                    if typeof(Active) ~= "boolean" then
+                        Table[Active] = true
+                    elseif Active and table.find(Dropdown.Values, Val) then
                         Table[Val] = true
                     end
                 end
@@ -4721,14 +4928,14 @@ print("upd")
             end
 
             Dropdown:Display()
-            for _, Button in pairs(Buttons) do
+            for _, Button in Buttons do
                 Button:UpdateButton()
             end
 
             if not Dropdown.Disabled then
+                Library:UpdateDependencyBoxes()
                 Library:SafeCallback(Dropdown.Callback, Dropdown.Value)
                 Library:SafeCallback(Dropdown.Changed, Dropdown.Value)
-                Library:UpdateDependencyBoxes()
             end
         end
 
@@ -4739,7 +4946,7 @@ print("upd")
 
         function Dropdown:AddValues(Values)
             if typeof(Values) == "table" then
-                for _, val in pairs(Values) do
+                for _, val in Values do
                     table.insert(Dropdown.Values, val)
                 end
             elseif typeof(Values) == "string" then
@@ -4758,7 +4965,7 @@ print("upd")
 
         function Dropdown:AddDisabledValues(DisabledValues)
             if typeof(DisabledValues) == "table" then
-                for _, val in pairs(DisabledValues) do
+                for _, val in DisabledValues do
                     table.insert(Dropdown.DisabledValues, val)
                 end
             elseif typeof(DisabledValues) == "string" then
@@ -4791,7 +4998,7 @@ print("upd")
 
         function Dropdown:SetText(Text: string)
             Dropdown.Text = Text
-            Holder.Size = UDim2.new(1, 0, 0, (Text and 39 or 21) * Library.DPIScale)
+            Holder.Size = UDim2.new(1, 0, 0, Text and 39 or 21)
 
             Label.Text = Text and Text or ""
             Label.Visible = not not Text
@@ -4815,7 +5022,6 @@ print("upd")
             if Index then
                 table.insert(Defaults, Index)
             end
-
         elseif typeof(Info.Default) == "table" then
             for _, Value in next, Info.Default do
                 local Index = table.find(Dropdown.Values, Value)
@@ -4823,7 +5029,6 @@ print("upd")
                     table.insert(Defaults, Index)
                 end
             end
-            
         elseif Dropdown.Values[Info.Default] ~= nil then
             table.insert(Defaults, Info.Default)
         end
@@ -6678,6 +6883,12 @@ function Library:CreateWindow(WindowInfo)
         
         WindowTitle.Text = title
         WindowInfo.Title = title
+    end
+
+    function Window:ChangeTitleColor(color)
+        assert(typeof(color) == "Color3", "Expected Color3 for color got: " .. typeof(color))
+        
+        WindowTitle.TextColor3 = color
     end
 
     function Window:AddTab(...)
