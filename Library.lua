@@ -7943,6 +7943,8 @@ function Library:CreateWindow(WindowInfo)
         end
     end
 
+	function Library:SetBackgroundImage(...) end
+
     if WindowInfo.AutoShow then
         task.spawn(Library.Toggle)
     end
