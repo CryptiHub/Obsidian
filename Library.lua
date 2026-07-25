@@ -3903,6 +3903,10 @@ do
             Toggle.Changed = Func
         end
 
+        function Toggle:RunChanged()
+            Toggle:SetValue(Toggle.Value)
+        end
+
         function Toggle:SetValue(Value)
             if Toggle.Disabled then
                 return
@@ -4068,6 +4072,10 @@ do
 
         function Input:OnChanged(Func)
             Input.Changed = Func
+        end
+
+        function Input:RunChanged()
+            Input:SetValue(Input.Value)
         end
 
         function Input:SetValue(Text)
@@ -4287,6 +4295,10 @@ do
 
         function Slider:OnChanged(Func)
             Slider.Changed = Func
+        end
+
+        function Slider:RunChanged()
+            Slider:SetValue(Slider.Value)
         end
 
         function Slider:SetMax(Value)
@@ -4614,6 +4626,10 @@ do
 
         function Dropdown:OnChanged(Func)
             Dropdown.Changed = Func
+        end
+
+        function Dropdown:RunChanged()
+            Dropdown:SetValue(Dropdown.Value)
         end
 
         function Dropdown:GetActiveValues()
