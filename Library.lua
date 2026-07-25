@@ -4629,7 +4629,7 @@ do
         end
 
         function Dropdown:RunChanged()
-            Dropdown:SetValue(Dropdown.Value)
+            if Dropdown.Value then Dropdown:SetValue(Dropdown.Value) end
         end
 
         function Dropdown:GetActiveValues()
